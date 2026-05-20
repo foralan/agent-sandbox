@@ -18,10 +18,10 @@ This image ships with the following so you do not need to install them yourself:
 
 | Category | Tools |
 |---|---|
-| AI CLIs | `claude` (Claude Code), `codex` (OpenAI Codex), `@larksuite/cli` |
+| AI CLIs | `claude` (Claude Code), `codex` (OpenAI Codex), `opencode`, `@larksuite/cli` |
 | VCS | `git`, `gh` (GitHub CLI) |
 | Container | `docker` CLI (talks to the host Docker daemon via mounted socket) |
-| Node.js | Node 22 LTS + `npm`, `npx` |
+| Node.js | Node 22 LTS + `npm`, `npx`, `bun` |
 | Python | `python3`, `pip`, `pipx`, `uv` |
 | Python apps | `crawl4ai` (with Playwright Chromium), `markitdown[pptx]` |
 | Office/PDF | `libreoffice-impress`, `poppler-utils` (pdftoppm, pdftotext, …) |

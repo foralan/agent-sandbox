@@ -1,6 +1,6 @@
 # agent-sandbox
 
-A Docker image running [Claude Code](https://claude.ai/code) and [Codex](https://github.com/openai/codex) on Ubuntu 24.04 LTS, with Docker CLI and GitHub CLI included.
+A Docker image running [Claude Code](https://claude.ai/code), [Codex](https://github.com/openai/codex), and [OpenCode](https://opencode.ai/) on Ubuntu 24.04 LTS, with Docker CLI and GitHub CLI included.
 
 ## Build
 
@@ -31,6 +31,8 @@ The script mounts:
 | Working directories | each arg | same path as host | read/write, first is `-w` |
 | Claude Code config | `./storage/.claude` | `/home/agent/.claude` | persistent |
 | Codex config | `./storage/.codex` | `/home/agent/.codex` | persistent |
+| OpenCode config | `./storage/.config/opencode` | `/home/agent/.config/opencode` | persistent |
+| OpenCode auth/session/history | `./storage/.local/share/opencode` | `/home/agent/.local/share/opencode` | persistent |
 | Docker socket | `/var/run/docker.sock` | `/var/run/docker.sock` | host Docker daemon |
 | Runtime info | `./storage/runtime-info.md` | `/etc/container-runtime-info.md` | regenerated each run |
 
@@ -40,17 +42,20 @@ On first run, log in to each tool as needed — credentials are persisted via th
 
 - **Claude Code**: run `claude` and follow the browser prompts, or set `ANTHROPIC_API_KEY`
 - **Codex**: set `OPENAI_API_KEY`
+- **OpenCode**: run `opencode auth login` or start `opencode` and use `/connect`
 - **GitHub CLI**: run `gh auth login`
 
-## Yolo aliases
+## Aliases
 
-The image ships two convenience aliases for autonomous operation:
+The image ships a few convenience aliases:
 
 ```bash
+oc            # opencode
 ccy           # claude --dangerously-skip-permissions
 cxy           # codex --dangerously-bypass-approvals-and-sandbox
-ccusage       # npx ccusage@latest
 ```
+
+OpenCode keeps its auth, session, and history data under `/home/agent/.local/share/opencode`, which is mounted to `./storage/.local/share/opencode` so those records survive container restarts.
 
 Container instructions are baked into `/etc/claude-code/CLAUDE.md` (Linux managed policy path), which Claude Code auto-loads at conversation start.
 
@@ -68,8 +73,8 @@ git config --global user.email "you@example.com"
 | Category | Tool | Install method |
 |---|---|---|
 | AI CLIs | Claude Code | Official shell script (auto-updates) |
-| AI CLIs | Codex CLI, `@larksuite/cli` | npm |
-| Runtime | Node.js 22 LTS | NodeSource |
+| AI CLIs | Codex CLI, OpenCode, `@larksuite/cli` | npm (installed as `agent`) |
+| Runtime | Node.js 22 LTS, Bun | NodeSource + official installer |
 | Runtime | Python 3 + `pipx`, `uv` | apt + official installer |
 | Container | Docker CLI | Docker apt repo (socket mounted from host) |
 | VCS | GitHub CLI (`gh`), `git` | GitHub apt repo / apt |
@@ -107,4 +112,5 @@ docker build ...   # uses host's daemon; images land on the host
 ## Notes
 
 - The container runs as a non-root user (`agent`) with passwordless `sudo`.
+- npm global packages are installed into `/home/agent/.local`, not under `root`.
 - `/etc/container-runtime-info.md` inside the container is regenerated at every `docker run` and describes the host OS and all mounts — handy for the agent.

@@ -40,9 +40,6 @@ RUN mkdir -p /etc/apt/keyrings \
     && apt-get update && apt-get install -y nodejs \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Codex CLI and lark-cli globally
-RUN npm install -g @openai/codex @larksuite/cli
-
 # Install GitHub CLI
 RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg \
     | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
@@ -97,8 +94,14 @@ WORKDIR /home/agent
 # Suppress Ubuntu's "sudo hint" message on shell start
 RUN touch /home/agent/.sudo_as_admin_successful
 
+# Install user-scoped Node.js tools and runtimes
+ENV BUN_INSTALL="/home/agent/.bun"
+ENV NPM_CONFIG_PREFIX="/home/agent/.local"
+ENV PATH="/home/agent/.bun/bin:/home/agent/.local/bin:$PATH"
+RUN curl -fsSL https://bun.sh/install | bash
+RUN npm install -g @openai/codex @larksuite/cli opencode-ai
+
 # Install Claude Code via official shell script
-ENV PATH="/home/agent/.local/bin:$PATH"
 RUN curl -fsSL https://claude.ai/install.sh | bash
 
 # Install uv (Python package manager)

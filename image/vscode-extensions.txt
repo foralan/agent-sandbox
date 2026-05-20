@@ -1,4 +1,3 @@
-anthropic.claude-code
 github.vscode-github-actions
 mechatroner.rainbow-csv
 ms-python.debugpy
@@ -11,3 +10,4 @@ ms-toolsai.jupyter-renderers
 ms-toolsai.vscode-jupyter-cell-tags
 ms-toolsai.vscode-jupyter-slideshow
 qwtel.sqlite-viewer
+sst-dev.opencode
