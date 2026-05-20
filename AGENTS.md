@@ -4,7 +4,7 @@
 
 - `Dockerfile` defines the Ubuntu-based image, installed CLIs, packages, aliases, and baked-in configuration.
 - `build.sh` builds the local image and tags it from the latest Git tag, falling back to `dev`.
-- `run.sh` starts the published image, mounts one or more host workdirs, and creates runtime metadata.
+- `run.sh` starts the published image and mounts one or more host workdirs.
 - `image/` contains files copied into the image: shell setup, VS Code settings/extensions, and container instructions.
 - `.github/workflows/docker-build.yml` builds and pushes GHCR images on `v*` tags.
 - `notes/archived/` stores historical setup notes; keep current behavior in `README.md`.
@@ -13,8 +13,8 @@
 ## Build, Test, and Development Commands
 
 - `./build.sh` builds `agent-sandbox:latest` and `agent-sandbox:<tag-or-dev>` with host UID and Docker socket GID build args.
-- `./run.sh ~/projects/my-app` starts a detached `agent-sandbox` container with that path as the working directory.
-- `./run.sh ~/projects/my-app ~/projects/shared-lib` mounts multiple workdirs; the first path becomes `-w`.
+- `./run.sh ./storage ~/projects/my-app` starts a detached `agent-sandbox` container with `/home/agent/my-app` as the working directory.
+- `./run.sh ./storage ~/projects/my-app ~/projects/shared-lib` mounts multiple workdirs under `/home/agent/<basename>`; the first path becomes `-w`.
 - `docker logs agent-sandbox` and `docker exec -it agent-sandbox bash` smoke test a run.
 
 There is no automated test suite. Validate by rebuilding the image and starting a container with a disposable workdir.
@@ -32,7 +32,7 @@ For Dockerfile or script changes, run:
 ```bash
 mkdir -p /tmp/agent-sandbox-smoke
 ./build.sh
-./run.sh /tmp/agent-sandbox-smoke
+./run.sh ./storage /tmp/agent-sandbox-smoke
 docker exec -it agent-sandbox bash
 ```
 

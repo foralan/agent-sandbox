@@ -18,23 +18,24 @@ Use the provided script:
 
 ```bash
 # Mount a single directory (becomes the working directory)
-./run.sh ~/projects/my-app
+./run.sh ./storage ~/projects/my-app
 
 # Mount multiple directories (first is the working directory)
-./run.sh ~/projects/my-app ~/projects/shared-lib
+./run.sh ./storage ~/projects/my-app ~/projects/shared-lib
 ```
+
+Each workdir is mounted under `/home/agent/<basename>`. For example, `/Users/yangyixuan/development` is mounted at `/home/agent/development`.
 
 The script mounts:
 
 | Mount | Host path | Container path | Notes |
 |---|---|---|---|
-| Working directories | each arg | same path as host | read/write, first is `-w` |
-| Claude Code config | `./storage/.claude` | `/home/agent/.claude` | persistent |
-| Codex config | `./storage/.codex` | `/home/agent/.codex` | persistent |
-| OpenCode config | `./storage/.config/opencode` | `/home/agent/.config/opencode` | persistent |
-| OpenCode auth/session/history | `./storage/.local/share/opencode` | `/home/agent/.local/share/opencode` | persistent |
+| Working directories | each workdir arg | `/home/agent/<basename>` | read/write, first is `-w` |
+| Claude Code config | `<storage-dir>/.claude` | `/home/agent/.claude` | persistent |
+| Codex config | `<storage-dir>/.codex` | `/home/agent/.codex` | persistent |
+| OpenCode config | `<storage-dir>/.config/opencode` | `/home/agent/.config/opencode` | persistent |
+| OpenCode auth/session/history | `<storage-dir>/.local/share/opencode` | `/home/agent/.local/share/opencode` | persistent |
 | Docker socket | `/var/run/docker.sock` | `/var/run/docker.sock` | host Docker daemon |
-| Runtime info | `./storage/runtime-info.md` | `/etc/container-runtime-info.md` | regenerated each run |
 
 ## Authentication
 
@@ -55,7 +56,7 @@ ccy           # claude --dangerously-skip-permissions
 cxy           # codex --dangerously-bypass-approvals-and-sandbox
 ```
 
-OpenCode keeps its auth, session, and history data under `/home/agent/.local/share/opencode`, which is mounted to `./storage/.local/share/opencode` so those records survive container restarts.
+OpenCode keeps its auth, session, and history data under `/home/agent/.local/share/opencode`, which is mounted to `<storage-dir>/.local/share/opencode` so those records survive container restarts.
 
 Container instructions are baked into `/etc/claude-code/CLAUDE.md` (Linux managed policy path), which Claude Code auto-loads at conversation start.
 
@@ -113,4 +114,3 @@ docker build ...   # uses host's daemon; images land on the host
 
 - The container runs as a non-root user (`agent`) with passwordless `sudo`.
 - npm global packages are installed into `/home/agent/.local`, not under `root`.
-- `/etc/container-runtime-info.md` inside the container is regenerated at every `docker run` and describes the host OS and all mounts — handy for the agent.

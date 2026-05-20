@@ -2,15 +2,7 @@
 
 ## Environment
 
-You are running inside a **Docker container (Ubuntu 24.04 LTS)**. You are the non-root user `agent` with passwordless `sudo`. The shell is `bash`. Do **not** assume anything about the host operating system — check `/etc/container-runtime-info.md` (see next section) to learn what it is.
-
-## Host & Mount Info
-
-Details about the host machine and the directories mounted into this container are written at **`/etc/container-runtime-info.md`**. This file is regenerated every time the container is launched. Read it when you need to know:
-
-- What OS/arch the host is running
-- Which host paths are mounted into the container and where
-- Your primary working directory
+You are running inside a **Docker container (Ubuntu 24.04 LTS)**. You are the non-root user `agent` with passwordless `sudo`. The shell is `bash`. Do **not** assume anything about the host operating system.
 
 ## Preinstalled Tools
 
@@ -48,7 +40,7 @@ Examples:
 - PostgreSQL on the host: `host.docker.internal:5432`
 - A local web server: `host.docker.internal:8080`
 
-This works on Docker Desktop (macOS/Windows) out of the box. On native Linux Docker it only resolves if the container was started with `--add-host=host.docker.internal:host-gateway` — check `/etc/container-runtime-info.md` for the host OS, and fall back to the host's actual IP if needed.
+This works on Docker Desktop (macOS/Windows) out of the box. On native Linux Docker it only resolves if the container was started with `--add-host=host.docker.internal:host-gateway`; fall back to the host's actual IP if needed.
 
 ## Python Virtual Environments
 
@@ -62,7 +54,7 @@ source .linux_venv/bin/activate
 
 ### Why `.linux_venv` instead of `.venv`
 
-Projects mounted from the host may already contain a `.venv` directory built for the host's OS/arch (e.g. darwin/arm64 if the host is a Mac). Those binaries are **incompatible** with this Linux container and must not be used. Check `/etc/container-runtime-info.md` to see the host's OS and arch.
+Projects mounted from the host may already contain a `.venv` directory built for the host's OS/arch (e.g. darwin/arm64 if the host is a Mac). Those binaries are **incompatible** with this Linux container and must not be used.
 
 Key rules:
 - **Never activate or use `.venv`** — if it exists, it was built for the host and will not run here.
