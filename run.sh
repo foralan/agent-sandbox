@@ -18,6 +18,7 @@ mkdir -p "$STORAGE_DIR/.claude"
 mkdir -p "$STORAGE_DIR/.codex"
 mkdir -p "$STORAGE_DIR/.config/opencode"
 mkdir -p "$STORAGE_DIR/.local/share/opencode"
+mkdir -p "$STORAGE_DIR/.local/state/opencode"
 
 # Build volume mounts for all provided directories
 WORKDIR_MOUNTS=()
@@ -37,9 +38,6 @@ for dir in "$@"; do
   WORKDIR_TARGETS+=("$target")
 done
 
-# First directory becomes the container's working directory
-PRIMARY_WORKDIR="${WORKDIR_TARGETS[0]}"
-
 docker run -itd \
   --name agent-sandbox \
   --hostname sandbox \
@@ -51,12 +49,12 @@ docker run -itd \
   \
   `# Working directories mounted under /home/agent by basename` \
   "${WORKDIR_MOUNTS[@]}" \
-  -w "${PRIMARY_WORKDIR}" \
   \
-  `# Persistent config for Claude Code, Codex, and OpenCode` \
+  `# Persistent config and runtime data for Claude Code, Codex, and OpenCode` \
   -v "$STORAGE_DIR/.claude:/home/agent/.claude" \
   -v "$STORAGE_DIR/.codex:/home/agent/.codex" \
   -v "$STORAGE_DIR/.config/opencode:/home/agent/.config/opencode" \
   -v "$STORAGE_DIR/.local/share/opencode:/home/agent/.local/share/opencode" \
+  -v "$STORAGE_DIR/.local/state/opencode:/home/agent/.local/state/opencode" \
   \
   ghcr.io/foralan/agent-sandbox:latest

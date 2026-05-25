@@ -26,3 +26,7 @@ alias venv-check='
   [ -d .venv ] && echo "WARNING: .venv exists (macOS build, do not use)" || echo "No .venv found"
   [ -d .linux_venv ] && echo ".linux_venv OK" || echo "No .linux_venv yet — run: uv sync"
 '
+
+# opencode
+export OPENCODE_EXPERIMENTAL_WORKSPACES=true
+export OPENCODE_DISABLE_CLAUDE_CODE=1

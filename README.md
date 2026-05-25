@@ -1,6 +1,6 @@
 # agent-sandbox
 
-A Docker image running [Claude Code](https://claude.ai/code), [Codex](https://github.com/openai/codex), and [OpenCode](https://opencode.ai/) on Ubuntu 24.04 LTS, with Docker CLI and GitHub CLI included.
+A Docker image running [Claude Code](https://claude.ai/code), [Codex](https://github.com/openai/codex), and [OpenCode](https://opencode.ai/) on an unminimized Ubuntu 24.04 LTS base, with Docker CLI and GitHub CLI included.
 
 ## Build
 
@@ -17,24 +17,28 @@ This passes two build args:
 Use the provided script:
 
 ```bash
-# Mount a single directory (becomes the working directory)
+# Mount a single directory
 ./run.sh ./storage ~/projects/my-app
 
-# Mount multiple directories (first is the working directory)
+# Mount multiple directories
 ./run.sh ./storage ~/projects/my-app ~/projects/shared-lib
+
+# Use shared persistent storage on this host
+./run.sh /Users/yangyixuan/docker-shared/agent-sandbox ~/projects/my-app
 ```
 
-Each workdir is mounted under `/home/agent/<basename>`. For example, `/Users/yangyixuan/development` is mounted at `/home/agent/development`.
+Each workdir is mounted under `/home/agent/<basename>`. For example, `/Users/yangyixuan/development` is mounted at `/home/agent/development`. The container starts in the image's default working directory, `/home/agent`.
 
 The script mounts:
 
 | Mount | Host path | Container path | Notes |
 |---|---|---|---|
-| Working directories | each workdir arg | `/home/agent/<basename>` | read/write, first is `-w` |
+| Working directories | each workdir arg | `/home/agent/<basename>` | read/write |
 | Claude Code config | `<storage-dir>/.claude` | `/home/agent/.claude` | persistent |
 | Codex config | `<storage-dir>/.codex` | `/home/agent/.codex` | persistent |
 | OpenCode config | `<storage-dir>/.config/opencode` | `/home/agent/.config/opencode` | persistent |
 | OpenCode auth/session/history | `<storage-dir>/.local/share/opencode` | `/home/agent/.local/share/opencode` | persistent |
+| OpenCode state | `<storage-dir>/.local/state/opencode` | `/home/agent/.local/state/opencode` | persistent |
 | Docker socket | `/var/run/docker.sock` | `/var/run/docker.sock` | host Docker daemon |
 
 ## Authentication
@@ -56,7 +60,7 @@ ccy           # claude --dangerously-skip-permissions
 cxy           # codex --dangerously-bypass-approvals-and-sandbox
 ```
 
-OpenCode keeps its auth, session, and history data under `/home/agent/.local/share/opencode`, which is mounted to `<storage-dir>/.local/share/opencode` so those records survive container restarts.
+OpenCode keeps its config under `/home/agent/.config/opencode`, auth/session/history data under `/home/agent/.local/share/opencode`, and state under `/home/agent/.local/state/opencode`. These default paths are mounted into `<storage-dir>` so records survive container restarts without setting `XDG_*` environment variables.
 
 Container instructions are baked into `/etc/claude-code/CLAUDE.md` (Linux managed policy path), which Claude Code auto-loads at conversation start.
 
@@ -73,8 +77,9 @@ git config --global user.email "you@example.com"
 
 | Category | Tool | Install method |
 |---|---|---|
+| Base OS | Ubuntu 24.04 LTS with restored man pages, docs, and locales | `unminimize` |
 | AI CLIs | Claude Code | Official shell script (auto-updates) |
-| AI CLIs | Codex CLI, OpenCode, `@larksuite/cli` | npm (installed as `agent`) |
+| AI CLIs | Codex CLI, OpenCode, `@larksuite/cli`, Bitwarden CLI (`bw`) | npm (installed as `agent`) |
 | Runtime | Node.js 22 LTS, Bun | NodeSource + official installer |
 | Runtime | Python 3 + `pipx`, `uv` | apt + official installer |
 | Container | Docker CLI | Docker apt repo (socket mounted from host) |

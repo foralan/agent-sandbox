@@ -5,6 +5,10 @@ ENV LANG=en_US.UTF-8
 ENV LC_ALL=en_US.UTF-8
 ENV UV_PROJECT_ENVIRONMENT=.linux_venv
 
+# Restore man pages, documentation, and locales for an interactive dev image.
+RUN yes | unminimize \
+    && rm -rf /var/lib/apt/lists/*
+
 # Install base dependencies and common dev tools
 RUN apt-get update && apt-get install -y \
     build-essential \
@@ -99,7 +103,7 @@ ENV BUN_INSTALL="/home/agent/.bun"
 ENV NPM_CONFIG_PREFIX="/home/agent/.local"
 ENV PATH="/home/agent/.bun/bin:/home/agent/.local/bin:$PATH"
 RUN curl -fsSL https://bun.sh/install | bash
-RUN npm install -g @openai/codex @larksuite/cli opencode-ai
+RUN npm install -g @openai/codex @larksuite/cli opencode-ai @bitwarden/cli
 
 # Install Claude Code via official shell script
 RUN curl -fsSL https://claude.ai/install.sh | bash
