@@ -103,7 +103,7 @@ ENV BUN_INSTALL="/home/agent/.bun"
 ENV NPM_CONFIG_PREFIX="/home/agent/.local"
 ENV PATH="/home/agent/.bun/bin:/home/agent/.local/bin:$PATH"
 RUN curl -fsSL https://bun.sh/install | bash
-RUN npm install -g @openai/codex @larksuite/cli opencode-ai @bitwarden/cli
+RUN npm install -g @openai/codex @larksuite/cli opencode-ai @bitwarden/cli @playwright/cli@latest
 
 # Install Claude Code via official shell script
 RUN curl -fsSL https://claude.ai/install.sh | bash

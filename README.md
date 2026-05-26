@@ -79,7 +79,7 @@ git config --global user.email "you@example.com"
 |---|---|---|
 | Base OS | Ubuntu 24.04 LTS with restored man pages, docs, and locales | `unminimize` |
 | AI CLIs | Claude Code | Official shell script (auto-updates) |
-| AI CLIs | Codex CLI, OpenCode, `@larksuite/cli`, Bitwarden CLI (`bw`) | npm (installed as `agent`) |
+| AI CLIs | Codex CLI, OpenCode, `@larksuite/cli`, Bitwarden CLI (`bw`), Playwright CLI (`playwright-cli`) | npm (installed as `agent`) |
 | Runtime | Node.js 22 LTS, Bun | NodeSource + official installer |
 | Runtime | Python 3 + `pipx`, `uv` | apt + official installer |
 | Container | Docker CLI | Docker apt repo (socket mounted from host) |
