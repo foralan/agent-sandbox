@@ -18,22 +18,22 @@ Use the provided script:
 
 ```bash
 # Mount a single directory
-./run.sh ./storage ~/projects/my-app
+./run.sh --storage ./storage --mount ~/projects/my-app
 
 # Mount multiple directories
-./run.sh ./storage ~/projects/my-app ~/projects/shared-lib
+./run.sh --storage ./storage --mount ~/projects/my-app --mount ~/projects/shared-lib
 
 # Use shared persistent storage on this host
-./run.sh /Users/yangyixuan/docker-shared/agent-sandbox ~/projects/my-app
+./run.sh --storage /Users/yangyixuan/docker-shared/agent-sandbox --mount ~/projects/my-app
 ```
 
-Each workdir is mounted under `/home/agent/<basename>`. For example, `/Users/yangyixuan/development` is mounted at `/home/agent/development`. The container starts in the image's default working directory, `/home/agent`.
+Each `--mount` workdir is mounted under `/home/agent/<basename>`. For example, `/Users/yangyixuan/development` is mounted at `/home/agent/development`. The container starts in the image's default working directory, `/home/agent`.
 
 The script mounts:
 
 | Mount | Host path | Container path | Notes |
 |---|---|---|---|
-| Working directories | each workdir arg | `/home/agent/<basename>` | read/write |
+| Working directories | each `--mount` arg | `/home/agent/<basename>` | read/write |
 | Claude Code config | `<storage-dir>/.claude` | `/home/agent/.claude` | persistent |
 | Codex config | `<storage-dir>/.codex` | `/home/agent/.codex` | persistent |
 | OpenCode config | `<storage-dir>/.config/opencode` | `/home/agent/.config/opencode` | persistent |

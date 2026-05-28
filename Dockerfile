@@ -3,7 +3,6 @@ FROM ubuntu:24.04
 ENV DEBIAN_FRONTEND=noninteractive
 ENV LANG=en_US.UTF-8
 ENV LC_ALL=en_US.UTF-8
-ENV UV_PROJECT_ENVIRONMENT=.linux_venv
 
 # Restore man pages, documentation, and locales for an interactive dev image.
 RUN yes | unminimize \

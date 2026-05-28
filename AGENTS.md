@@ -7,14 +7,13 @@
 - `run.sh` starts the published image and mounts one or more host workdirs.
 - `image/` contains files copied into the image: shell setup, VS Code settings/extensions, and container instructions.
 - `.github/workflows/docker-build.yml` builds and pushes GHCR images on `v*` tags.
-- `notes/archived/` stores historical setup notes; keep current behavior in `README.md`.
 - `storage/` and `.omc/` are ignored runtime state. Do not commit credentials, generated agent config, or transient metadata.
 
 ## Build, Test, and Development Commands
 
 - `./build.sh` builds `agent-sandbox:latest` and `agent-sandbox:<tag-or-dev>` with host UID and Docker socket GID build args.
-- `./run.sh ./storage ~/projects/my-app` starts a detached `agent-sandbox` container with `/home/agent/my-app` as the working directory.
-- `./run.sh ./storage ~/projects/my-app ~/projects/shared-lib` mounts multiple workdirs under `/home/agent/<basename>`; the first path becomes `-w`.
+- `./run.sh --storage ./storage --mount ~/projects/my-app` starts a detached `agent-sandbox` container and mounts the workdir under `/home/agent/my-app`.
+- `./run.sh --storage ./storage --mount ~/projects/my-app --mount ~/projects/shared-lib` mounts multiple workdirs under `/home/agent/<basename>`.
 - `docker logs agent-sandbox` and `docker exec -it agent-sandbox bash` smoke test a run.
 
 There is no automated test suite. Validate by rebuilding the image and starting a container with a disposable workdir.
@@ -23,7 +22,7 @@ There is no automated test suite. Validate by rebuilding the image and starting 
 
 Shell scripts use Bash, two-space indentation in continued Docker commands, quoted variables, and uppercase derived paths such as `STORAGE_DIR`. Keep scripts executable.
 
-Use lowercase, hyphenated names for documentation and setup notes. Prefer concise Markdown with command examples in fenced `bash` blocks. Keep Dockerfile changes grouped by tool category and update `README.md` when installed tools or mounts change.
+Use lowercase, hyphenated names for documentation and setup notes. Prefer concise Markdown with command examples in fenced `bash` blocks. For normal Dockerfile changes, prefer appending new install/setup steps instead of reorganizing existing sections; reserve Dockerfile layout cleanup and grouping optimization for major releases such as `v2.0`. Update `README.md` when installed tools or mounts change.
 
 ## Testing Guidelines
 
@@ -32,7 +31,7 @@ For Dockerfile or script changes, run:
 ```bash
 mkdir -p /tmp/agent-sandbox-smoke
 ./build.sh
-./run.sh ./storage /tmp/agent-sandbox-smoke
+./run.sh --storage ./storage --mount /tmp/agent-sandbox-smoke
 docker exec -it agent-sandbox bash
 ```
 

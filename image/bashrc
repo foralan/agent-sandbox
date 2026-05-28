@@ -19,14 +19,6 @@ if command -v code &>/dev/null && [ ! -f ~/.vscode-extensions-installed ]; then
     touch ~/.vscode-extensions-installed
 fi
 
-# Python venv helpers
-# .venv (if present) is built for macOS — never use it inside this container
-# Always use .linux_venv (set via UV_PROJECT_ENVIRONMENT=.linux_venv)
-alias venv-check='
-  [ -d .venv ] && echo "WARNING: .venv exists (macOS build, do not use)" || echo "No .venv found"
-  [ -d .linux_venv ] && echo ".linux_venv OK" || echo "No .linux_venv yet — run: uv sync"
-'
-
 # opencode
 export OPENCODE_EXPERIMENTAL_WORKSPACES=true
 export OPENCODE_DISABLE_CLAUDE_CODE=1
